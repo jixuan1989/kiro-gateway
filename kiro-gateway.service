@@ -1,0 +1,47 @@
+[Unit]
+Description=Kiro Gateway - OpenAI/Anthropic Compatible API Proxy
+Documentation=https://github.com/nicholasgriffintn/kiro-gateway
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+# === 运行身份 ===
+User=hxd
+Group=hxd
+
+# === 工作目录与启动命令 ===
+WorkingDirectory=/home/hxd/codes/kiro-gateway
+EnvironmentFile=/home/hxd/codes/kiro-gateway/.env
+ExecStart=/home/hxd/miniconda3/bin/python main.py
+
+# === 崩溃自动重启策略 ===
+Restart=always
+RestartSec=5
+
+# === 日志输出 ===
+# 标准输出和错误输出均发送到 journald
+StandardOutput=journal
+StandardError=journal
+# 日志标识符（用于 journalctl 过滤）
+SyslogIdentifier=kiro-gateway
+
+# === 进程管理 ===
+# 优雅关闭：先发 SIGTERM，等 30 秒后强制 SIGKILL
+KillMode=mixed
+TimeoutStopSec=30
+
+# === 环境变量 ===
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+
+# === 安全加固（可选但推荐）===
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/hxd/codes/kiro-gateway/debug_logs
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
